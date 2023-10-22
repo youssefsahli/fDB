@@ -24,9 +24,30 @@ MEDIA_ROOT =  os.path.join(BASE_DIR, 'media/')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
+SECURE_HSTS_SECONDS = 31536000  # 1 year in seconds
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+
+SECRET_KEY_INSECURE_PREFIX = "django-insecure-"
+SECRET_KEY_MIN_LENGTH = 50
+SECRET_KEY_MIN_UNIQUE_CHARACTERS = 5
+
+def _check_secret_key(secret_key):
+    return (
+        len(set(secret_key)) >= SECRET_KEY_MIN_UNIQUE_CHARACTERS
+        and len(secret_key) >= SECRET_KEY_MIN_LENGTH
+        and not secret_key.startswith(SECRET_KEY_INSECURE_PREFIX)
+    )
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+if not _check_secret_key(SECRET_KEY):
+    raise ValueError("The provided SECRET_KEY is not secure!")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -44,6 +65,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -121,6 +143,7 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"),]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
