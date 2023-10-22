@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>All Fungi</h1>
+  
+  {% for fungus in fungi %}
+    <div class="fungi-card">
+        {% if fungus.images.first %}
+            <img src="{{ fungus.images.first.image.url }}" alt="{{ fungus.french_name }}">
+        {% endif %}
+        <div class="info">
+            <h2><a href="{% url 'fungi_detail' fungus.id %}">{{ fungus.french_name }}</a></h2>
+            <p>{{ fungus.latin_name }}</p>
+        </div>
+    </div>
+  {% endfor %}
+{% endblock %}
+

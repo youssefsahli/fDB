@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>{{ fungus.french_name }} ({{ fungus.latin_name }})</h1>
+  <p>Edibility: {{ fungus.get_edibility_display }}</p>
+  <p>Smell: {{ fungus.smell }}</p>
+ <!-- Thumbnails Grid -->
+<div class="fungi-images">
+    {% for img in fungus.images.all %}
+        <div class="fungi-image-container">
+            <img src="{{ img.image.url }}" alt="{{ fungus.french_name }}" class="fungi-thumbnail" data-src="{{ img.image.url }}">
+        </div>
+    {% endfor %}
+</div>
+
+
+<!-- Modal for Image Viewer -->
+<div id="fungiModal" class="modal">
+    <span class="modal-close" onclick="closeModal()">&times;</span>
+    <img id="modalImage">
+</div>
+
+<!-- JavaScript for Modal Behavior -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let thumbnails = document.querySelectorAll('.fungi-thumbnail');
+        let modal = document.getElementById('fungiModal');
+        let modalImage = document.getElementById('modalImage');
+        
+        thumbnails.forEach(thumb => {
+            thumb.addEventListener('click', function() {
+                modal.style.display = "flex";
+                modalImage.src = thumb.getAttribute('data-src');
+            });
+        });
+        
+        window.closeModal = function() {
+            modal.style.display = "none";
+        }
+    });
+</script>
+
+{% endblock %}
+

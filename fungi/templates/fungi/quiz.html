@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="quiz-container">
+    <!-- Image that, when clicked, will open the modal -->
+    <img src="{{ image.image.url }}" alt="Guess the fungus" id="fungiImg" style="cursor: pointer; max-width: 100%;">
+
+    <!-- The Modal -->
+    <div id="imgModal" class="modal">
+      <span class="close">&times;</span>
+      <img class="modal-content" id="imgInModal">
+      <div id="caption"></div>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="image_id" value="{{ image.id }}">
+        
+        {% if not feedback %}
+            <label for="guess">Your guess:</label>
+            <input type="text" name="guess" required>
+            <input type="hidden" name="correct_answer" value="{{ image.fungi.latin_name }}">
+            <button type="submit">Submit</button>
+        {% else %}
+            <p>{{ feedback }}</p>
+            <button type="submit" name="next" value="true" class="next-button">Next</button>
+        {% endif %}
+    </form>
+</div>
+          <script>
+            
+            // When the fungi image is clicked, open the modal and display the image inside
+document.getElementById('fungiImg').onclick = function() {
+    document.getElementById('imgModal').style.display = "block";
+    document.getElementById('imgInModal').src = this.src;
+}
+
+// When the close button inside the modal is clicked, close the modal
+document.getElementsByClassName('close')[0].onclick = function() { 
+    document.getElementById('imgModal').style.display = "none";
+}
+
+// If anywhere outside the modal content (image) is clicked, close the modal
+document.getElementById('imgModal').onclick = function(event) {
+    if (event.target === this) {
+        this.style.display = "none";
+    }
+}
+
+            
+          </script>
+{% endblock %}
+
