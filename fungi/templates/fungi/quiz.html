@@ -2,8 +2,34 @@
 
 {% block content %}
 <div class="quiz-container">
-    <!-- Image that, when clicked, will open the modal -->
-    <img src="{{ image.image.url }}" alt="Guess the fungus" id="fungiImg" style="cursor: pointer; max-width: 100%;">
+    {% if feedback %}
+      <div class="feedback-section">
+        <h2>Feedback</h2>
+        <p>{{ feedback }}</p>
+
+        <div class="fungi-details">
+            <strong>Latin Name:</strong> {{ image.fungi.latin_name }}<br>
+            <strong>French Name:</strong> {{ image.fungi.french_name }}<br>
+            <strong>Edibility:</strong> {{ image.fungi.get_edibility_display }}<br>
+        </div>
+
+    </div>
+    {% endif %}
+    <div class="smell-info">
+        <strong>Smell:</strong>
+        {% if image.fungi.smell %}
+            {{ image.fungi.smell }}
+        {% else %}
+            Not distinct
+        {% endif %}
+    </div>
+
+
+    <div class="fungi-image-section">
+       <!-- Image that, when clicked, will open the modal -->
+      <img src="{{ image.image.url }}" alt="Guess the fungus" id="fungiImg" style="cursor: pointer; max-width: 100%;">
+    </div>
+
 
     <!-- The Modal -->
     <div id="imgModal" class="modal">
@@ -13,30 +39,48 @@
     </div>
 
     <form method="post">
-        {% csrf_token %}
-        <input type="hidden" name="image_id" value="{{ image.id }}">
-        
-        {% if not feedback %}
-            <label for="guess">Your guess:</label>
-            <input type="text" name="guess" required>
-            <input type="hidden" name="correct_answer" value="{{ image.fungi.latin_name }}">
-            <button type="submit">Submit</button>
-        {% else %}
-            <p>{{ feedback }}</p>
-            <button type="submit" name="next" value="true" class="next-button">Next</button>
-        {% endif %}
-    </form>
+      {% csrf_token %}
+      <input type="hidden" name="image_id" value="{{ image.id }}">
+      <div class="selection-section" style="display: none;">
+        <div class="genre-grid" id="genreGrid">
+          {% for genre in genres %}
+              <button type="button" onclick="fetchSpecies({{ genre.id }})">{{ genre.name }}</button>
+          {% endfor %}
+        </div>
+
+        <!-- Back Button -->
+        <button id="backButton" onclick="showGenres()" style="display: none;">Back to Genres</button>
+
+        <div class="species-grid" id="speciesButtons">
+            <!-- Species buttons will be injected here via JavaScript -->
+        </div>
+      </div>
+
+<form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="image_id" value="{{ image.id }}">
+    <input type="hidden" name="selected_species" id="selectedSpeciesInput">
+    <input type="hidden" name="correct_answer" id="correctAnswerInput" value="{{ image.fungi.latin_name }}">
+    <input type="hidden" name="current_image_id" value="{{ image.id }}">
+    {% if not feedback %}
+        <button type="submit" name="dont_know" value="true">I don't know</button>
+         <!-- <button class="next-button" type="submit">Submit</button> -->
+    {% else %}
+        <button type="submit" name="next" value="true" class="next-button">Next</button>
+    {% endif %}
+</form>
+
 </div>
-          <script>
-            
-            // When the fungi image is clicked, open the modal and display the image inside
+
+<script>
+// When the fungi image is clicked, open the modal and display the image inside
 document.getElementById('fungiImg').onclick = function() {
     document.getElementById('imgModal').style.display = "block";
     document.getElementById('imgInModal').src = this.src;
 }
 
 // When the close button inside the modal is clicked, close the modal
-document.getElementsByClassName('close')[0].onclick = function() { 
+document.getElementsByClassName('close')[0].onclick = function() {
     document.getElementById('imgModal').style.display = "none";
 }
 
@@ -47,7 +91,47 @@ document.getElementById('imgModal').onclick = function(event) {
     }
 }
 
-            
-          </script>
+function selectSpecies(speciesId) {
+    const speciesInput = document.getElementById('selectedSpeciesInput');
+    speciesInput.value = speciesId;
+}
+
+function fetchSpecies(genreId) {
+    fetch(`/fungi/get_species/${genreId}/`)
+        .then(response => response.json())
+        .then(data => {
+            const speciesContainer = document.getElementById('speciesButtons');
+            speciesContainer.innerHTML = ''; // Clear any existing buttons
+            data.species.forEach(specie => {
+                const button = document.createElement('button');
+                button.innerText = specie.name;
+                button.value = specie.id;
+                button.name = "selectedSpecie";
+                button.onclick = function() { selectSpecies(specie.id); };
+                speciesContainer.appendChild(button);
+            });
+
+            // Hide genre grid and show species grid
+            document.getElementById('genreGrid').style.display = 'none';
+            document.getElementById('speciesButtons').style.display = 'grid';
+            document.getElementById('backButton').style.display = 'block';  // Show the back button
+        });
+}
+
+function showGenres() {
+    const genreGrid = document.querySelector('.genre-grid');
+    const speciesGrid = document.querySelector('.species-grid');
+    const speciesInput = document.getElementById('selectedSpeciesInput');
+
+    // Reset the selected species input value
+    speciesInput.value = '';
+
+    genreGrid.style.display = 'grid';
+    speciesGrid.style.display = 'none';
+}
+
+
+</script>
+
 {% endblock %}
 

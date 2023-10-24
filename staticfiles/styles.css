@@ -1,0 +1,223 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #FAF0E6;
+    color: #8B4513;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    background-color: #8B4513;
+    color: #FAF0E6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    border-bottom: 1px solid #FFE4B5;
+}
+
+.header a {
+    color: #FAF0E6;
+    text-decoration: none;
+    padding: 5px 10px;
+    border: 1px solid #FFE4B5;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.header a:hover {
+    background-color: #FFE4B5;
+}
+
+.content {
+    padding: 20px;
+}
+
+img {
+    max-width: 80%;
+    height: auto;
+    display: block;
+    margin: 20px 0;
+}
+
+button, input[type="submit"], input[type="button"] {
+    background-color: #8B4513;
+    color: #FAF0E6;
+    border: 1px solid #FFE4B5;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover, input[type="submit"]:hover, input[type="button"]:hover {
+    background-color: #FAF0E6;
+    color: #8B4513;
+}
+
+/* For thin lines and buttons */
+hr, input[type="text"], select {
+    border: 1px solid #8B4513;
+    padding: 5px 10px;
+    margin: 10px 0;
+}
+
+.fungi-card {
+    border: 1px solid #8B4513;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    background-color: #FFE4B5;
+    display: flex;
+    align-items: center;
+}
+
+.fungi-card img {
+    max-width: 100px;
+    margin-right: 10px;
+    border-radius: 5px;
+}
+
+.fungi-card .info {
+    flex-grow: 1;
+}
+
+/* Fungi Image Grid */
+.fungi-images {
+    display: flex; 
+    justify-content: center; 
+    flex-wrap: wrap; 
+    gap: 20px;
+}
+
+.fungi-image-container {
+    width: 250px;       /* Set a fixed width for the container */
+    height: 150px;      /* Set a fixed height for the container */
+    overflow: hidden;   /* Hide any overflowing parts of the image */
+    border-radius: 5px; /* Optional: Round the corners of the container */
+    position: relative; /* Establish a stacking context for the inner image */
+}
+
+.fungi-image-container:hover {
+    transform: scale(1.1); /* Enlarge the container slightly on hover */
+    transition: transform 0.3s; /* Smooth transition for the scaling effect */
+    z-index: 10; /* Ensure hovered container is above others, to prevent overlap issues */
+}
+
+.fungi-images img {
+    display: block;
+    width: 100%;          /* Scale the width to the container */
+    height: 100%;         /* Scale the height to the container */
+    object-fit: cover;    /* Crop the image to cover the container without distortion */
+    position: absolute;   /* Absolute position ensures image fills the container */
+    top: 50%;             /* Center the image vertically */
+    left: 50%;            /* Center the image horizontally */
+    transform: translate(-50%, -50%); /* Ensure image remains centered */
+    transition: transform 0.3s;
+}
+
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal img {
+    max-width: 80%;
+    max-height: 80%;
+}
+
+.modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #FFF;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.next-button {
+    display: inline-block;
+    background-color: #FFD700;  /* Gold background */
+    color: #000;                /* Black text */
+    padding: 8px 16px;          /* Some padding */
+    border-radius: 4px;         /* Rounded corners */
+    text-decoration: none;      /* Remove underline */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.next-button:hover {
+    background-color: #FFC700;  /* Slightly darker gold on hover */
+}
+
+/* Style for the modal */
+.modal {
+    display: none; 
+    position: fixed;
+    z-index: 1;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.9);
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;    /* Set width to 90% of the viewport */
+    height: auto;  /* Maintain aspect ratio */
+    max-width: 100%;  /* Allow it to stretch up to 100% if needed */
+    max-height: 90%;  /* Set max-height to 90% of the viewport */
+}
+
+
+.close {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.close:hover, .close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Container for the quiz content */
+.quiz-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 70vh;  /* Takes up at least 70% of the viewport height */
+    padding: 20px;
+    gap: 20px;  /* Spacing between child elements */
+}
+
+/* Style for the quiz form */
+.quiz-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 400px;  /* Maximum width for the form */
+}
+
